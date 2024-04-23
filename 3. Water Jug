@@ -1,0 +1,78 @@
+from collections import deque
+
+def water_jugs(capacity_x, capacity_y, target):
+    start_state = (0, 0)
+    queue = deque([(start_state, [])])
+    visited = set()
+
+    while queue:
+        state, path = queue.popleft()
+        x, y = state
+
+        if x == target or y == target:
+            path.append(state)
+            return path
+
+        if state in visited:
+            continue
+
+        visited.add(state)
+
+        # Fill jug X
+        new_state = (capacity_x, y)
+        new_path = path + [f"Fill jug X ({new_state[0]}, {new_state[1]})"]
+        queue.append((new_state, new_path))
+
+        # Fill jug Y
+        new_state = (x, capacity_y)
+        new_path = path + [f"Fill jug Y ({new_state[0]}, {new_state[1]})"]
+        queue.append((new_state, new_path))
+
+        # Empty jug X
+        new_state = (0, y)
+        new_path = path + [f"Empty jug X ({new_state[0]}, {new_state[1]})"]
+        queue.append((new_state, new_path))
+
+        # Empty jug Y
+        new_state = (x, 0)
+        new_path = path + [f"Empty jug Y ({new_state[0]}, {new_state[1]})"]
+        queue.append((new_state, new_path))
+
+        # Transfer from X to Y
+        new_x = max(0, x - (capacity_y - y))
+        new_y = min(capacity_y, x + y)
+        new_state = (new_x, new_y)
+        new_path = path + [f"Transfer from X to Y ({new_state[0]}, {new_state[1]})"]
+        queue.append((new_state, new_path))
+
+        # Transfer from Y to X
+        new_y = max(0, y - (capacity_x - x))
+        new_x = min(capacity_x, x + y)
+        new_state = (new_x, new_y)
+        new_path = path + [f"Transfer from Y to X ({new_state[0]}, {new_state[1]})"]
+        queue.append((new_state, new_path))
+
+    return None
+
+# Example usage
+capacity_x = 3
+capacity_y = 5
+target = 4
+solution = water_jugs(capacity_x, capacity_y, target)
+
+if solution:
+    print("Solution found:")
+    for step in solution:
+        print(step)
+else:
+    print("No solution found.")
+-----------------------------------------------------------------------
+Solution found:
+Fill jug Y (0, 5)
+Transfer from Y to X (3, 2)
+Empty jug X (0, 2)
+Transfer from Y to X (2, 0)
+Fill jug Y (2, 5)
+Transfer from Y to X (3, 4)
+(3, 4)
+=== Code Execution Successful ===
