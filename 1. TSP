@@ -1,44 +1,50 @@
 import sys
 
-def all_visited(visited):
-    return all(visited)
+def nearest_neighbor(graph, start):
+    n = len(graph)
+    visited = [False] * n
+    path = [start]
+    visited[start] = True
+    current_node = start
 
-def tsp(visited, cost, current, path):
-    global min_cost, ans
-    if all_visited(visited):
-        if cost + graph[current][0] < min_cost:
-            min_cost = cost + graph[current][0]
-            ans = path + [0]
-        return
+    while False in visited:
+        min_cost = sys.maxsize
+        next_node = None
 
+        for neighbor in range(n):
+            if not visited[neighbor] and graph[current_node][neighbor] < min_cost:
+                min_cost = graph[current_node][neighbor]
+                next_node = neighbor
+
+        visited[next_node] = True
+        path.append(next_node)
+        current_node = next_node
+
+    cost = 0
     for i in range(n):
-        if not visited[i] and i != current:
-            visited[i] = True
-            tsp(visited, cost + graph[current][i], i, path + [i])
-            visited[i] = False
+        cost += graph[path[i]][path[(i + 1) % n]]
+
+    return path, cost
 
 if __name__ == "__main__":
-    print("Enter number of vertices:")
+    print("Enter the number of vertices:")
     n = int(input())
-    graph = []
 
+    graph = []
     for i in range(n):
         row = []
         for j in range(n):
             if i != j:
-                print("Enter cost of", i, "to", j)
-                e = int(input())
-                row.append(e)
+                print(f"Enter the cost from vertex {i} to vertex {j}:")
+                cost = int(input())
+                row.append(cost)
             else:
                 row.append(0)
         graph.append(row)
 
-    min_cost = sys.maxsize
-    ans = []
-    visited = [False] * n
-    visited[0] = True
+    print("Enter the starting vertex:")
+    start = int(input())
 
-    tsp(visited, 0, 0, [0])
-
-    print("Shortest path:", ans)
-    print("Min Cost:", min_cost)
+    path, cost = nearest_neighbor(graph, start)
+    print("Shortest path:", path)
+    print("Total cost:", cost)
