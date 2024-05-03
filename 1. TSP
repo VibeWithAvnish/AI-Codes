@@ -1,70 +1,44 @@
-import random
-import math
+import sys
 
-# Define the cities and their coordinates
-cities = {
-    'A': (0, 0),
-    'B': (1, 3),
-    'C': (2, 5),
-    'D': (4, 2),
-    'E': (6, 4),
-    'F': (5, 0)
-}
+def all_visited(visited):
+    return all(visited)
 
-# Calculate Euclidean distance between two cities
-def calculate_distance(city1, city2):
-    x1, y1 = cities[city1]
-    x2, y2 = cities[city2]
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+def tsp(visited, cost, current, path):
+    global min_cost, ans
+    if all_visited(visited):
+        if cost + graph[current][0] < min_cost:
+            min_cost = cost + graph[current][0]
+            ans = path + [0]
+        return
 
-# Calculate total distance of a tour
-def calculate_tour_distance(tour):
-    total_distance = 0
-    for i in range(len(tour) - 1):
-        total_distance += calculate_distance(tour[i], tour[i + 1])
-    total_distance += calculate_distance(tour[-1], tour[0])  # Return to starting city
-    return total_distance
-
-# Initialize a random tour
-def generate_random_tour():
-    tour = list(cities.keys())
-    random.shuffle(tour)
-    return tour
-
-# Simulated Annealing algorithm
-def simulated_annealing():
-    current_tour = generate_random_tour()
-    current_distance = calculate_tour_distance(current_tour)
-    temperature = 100.0
-    cooling_rate = 0.01
-
-    while temperature > 1:
-        new_tour = current_tour.copy()
-        # Swap two random cities in the tour
-        idx1, idx2 = random.sample(range(len(new_tour)), 2)
-        new_tour[idx1], new_tour[idx2] = new_tour[idx2], new_tour[idx1]
-        new_distance = calculate_tour_distance(new_tour)
-
-        # Calculate acceptance probability based on temperature and difference in distances
-        if new_distance < current_distance or random.random() < math.exp((current_distance - new_distance) / temperature):
-            current_tour = new_tour
-            current_distance = new_distance
-        
-        temperature *= 1 - cooling_rate  # Cool down
-
-    return current_tour, current_distance
-
-# Main function to run simulated annealing and print results
-def main():
-    best_tour, best_distance = simulated_annealing()
-    print(f"Best tour found: {best_tour}")
-    print(f"Total distance: {best_distance:.2f}")
+    for i in range(n):
+        if not visited[i] and i != current:
+            visited[i] = True
+            tsp(visited, cost + graph[current][i], i, path + [i])
+            visited[i] = False
 
 if __name__ == "__main__":
-    main()
-------------------------------------------------------
-output : 
-Best tour found: ['E', 'F', 'D', 'A', 'B', 'C']
-Total distance: 20.35
+    print("Enter number of vertices:")
+    n = int(input())
+    graph = []
 
-=== Code Execution Successful ===
+    for i in range(n):
+        row = []
+        for j in range(n):
+            if i != j:
+                print("Enter cost of", i, "to", j)
+                e = int(input())
+                row.append(e)
+            else:
+                row.append(0)
+        graph.append(row)
+
+    min_cost = sys.maxsize
+    ans = []
+    visited = [False] * n
+    visited[0] = True
+
+    tsp(visited, 0, 0, [0])
+
+    print("Shortest path:", ans)
+    print("Min Cost:", min_cost)
