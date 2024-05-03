@@ -54,10 +54,11 @@ def water_jugs(capacity_x, capacity_y, target):
 
     return None
 
-# Example usage
-capacity_x = 3
-capacity_y = 5
-target = 4
+# Get input from the user
+capacity_x = int(input("Enter the capacity of jug X: "))
+capacity_y = int(input("Enter the capacity of jug Y: "))
+target = int(input("Enter the target amount: "))
+
 solution = water_jugs(capacity_x, capacity_y, target)
 
 if solution:
@@ -66,13 +67,3 @@ if solution:
         print(step)
 else:
     print("No solution found.")
------------------------------------------------------------------------
-Solution found:
-Fill jug Y (0, 5)
-Transfer from Y to X (3, 2)
-Empty jug X (0, 2)
-Transfer from Y to X (2, 0)
-Fill jug Y (2, 5)
-Transfer from Y to X (3, 4)
-(3, 4)
-=== Code Execution Successful ===
